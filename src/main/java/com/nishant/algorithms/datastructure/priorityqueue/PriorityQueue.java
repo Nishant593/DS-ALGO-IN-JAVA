@@ -22,11 +22,10 @@ public class PriorityQueue<T extends Comparable<T>> {
 			throw new IndexOutOfBoundsException("PriorityQueue is full.");
 		arr[this.size] = t;
 		this.size++;
-		bubbleUp();
+		bubbleUp(this.size - 1);
 	}
 
-	private void bubbleUp() {
-		int index = this.size - 1;
+	private void bubbleUp(int index) {
 		int parentIndex = (index - 1) / 2;
 		while (this.arr[index].compareTo(this.arr[parentIndex]) < 0) {
 			swap(index, parentIndex);
@@ -56,16 +55,43 @@ public class PriorityQueue<T extends Comparable<T>> {
 		while (true) {
 			int leftChildIndex = 2 * index + 1;
 			int rightChildIndex = 2 * index + 2;
-			if (leftChildIndex < this.size - 1 && this.arr[index].compareTo(this.arr[leftChildIndex]) > 0) {
-				swap(index, leftChildIndex);
-				index = leftChildIndex;
-			} else if (rightChildIndex < this.size - 1 && this.arr[index].compareTo(this.arr[leftChildIndex]) < 0) {
-				swap(index, rightChildIndex);
-				index = rightChildIndex;
+			if(leftChildIndex >= this.size-1) {
+				break;
+			}
+			
+			if(rightChildIndex >= this.size - 1) {
+				rightChildIndex = leftChildIndex;
+			}
+			
+			int childIndex = (this.arr[leftChildIndex].compareTo(this.arr[rightChildIndex]) < 0) ? leftChildIndex : rightChildIndex;
+			if (childIndex < this.size - 1 && this.arr[index].compareTo(this.arr[childIndex]) > 0) {
+				swap(index, childIndex);
+				index = childIndex;
 			} else {
 				break;
 			}
 		}
+	}
+
+	private boolean remove(T t) {
+		int index = indexOf(t);
+		if(index == -1) return false;
+		swap(index, this.size-1);
+		int parentIndex = (index-1)/2;
+		if(parentIndex >= 0 && this.arr[index].compareTo(this.arr[parentIndex]) < 0) {
+			bubbleUp(index);
+		}
+		
+		return true;
+	}
+	
+	private int indexOf(T t) {
+		for(int i = 0; i < this.arr.length; i++) {
+			if(t.equals(this.arr[i])) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public T peek() {
@@ -89,9 +115,9 @@ public class PriorityQueue<T extends Comparable<T>> {
 	}
 
 	public static void main(String[] args) {
-		PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
+		PriorityQueue<Integer> pq = new PriorityQueue<Integer>(15);
 		pq.add(11);
-		System.out.println(pq.poll());
+		pq.poll();
 		pq.add(1);
 		pq.add(90);
 		pq.add(32);
@@ -99,11 +125,14 @@ public class PriorityQueue<T extends Comparable<T>> {
 		pq.add(93);
 		pq.add(77);
 		pq.add(17);
+		pq.add(63);
 		pq.add(11);
+		pq.add(63);
 		pq.add(42);
-		System.out.println(pq.poll());
-		System.out.println(pq.poll());
-		System.out.println(pq.size);
+		pq.poll();
+		pq.add(63);
+		pq.poll();
+		//System.out.println(pq.size);
 		pq.printQueue();
 	}
 
