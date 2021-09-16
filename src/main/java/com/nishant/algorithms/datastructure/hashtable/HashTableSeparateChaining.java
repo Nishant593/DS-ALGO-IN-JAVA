@@ -19,7 +19,7 @@ class Entry<K, V> {
         this.hash = k.hashCode();
     }
 
-    public boolean equlas(Entry<K, V> entryObj) {
+    public boolean equals(Entry<K, V> entryObj) {
         if (this.hash != entryObj.hash) return false;
         return this.key.equals(entryObj.key);
     }
@@ -146,7 +146,7 @@ public class HashTableSeparateChaining<K, V> {
         Entry<K, V> entryObj = new Entry<>(key, value);
         boolean isObjectAvailable = false;
         while (temp != null) {
-            isObjectAvailable = temp.getData().equlas(entryObj);
+            isObjectAvailable = temp.getData().equals(entryObj);
             if (isObjectAvailable) {
                 temp.getData().value = value;
             }
